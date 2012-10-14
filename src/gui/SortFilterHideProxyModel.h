@@ -36,6 +36,9 @@ protected:
 
 private:
     QBitArray m_hiddenColumns;
+
+protected:
+  bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 };
 
 #endif // KEEPASSX_SORTFILTERHIDEPROXYMODEL_H

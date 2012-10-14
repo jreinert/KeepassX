@@ -16,6 +16,10 @@
  */
 
 #include "SortFilterHideProxyModel.h"
+#include <stdio.h>
+
+QRegExp bignum("^\\d+([\\.,]\\d+){,1}$");
+QRegExp num("^\\d+([\\.,]\\d+){,1}$");
 
 SortFilterHideProxyModel::SortFilterHideProxyModel(QObject* parent)
     : QSortFilterProxyModel(parent)
@@ -35,4 +39,32 @@ bool SortFilterHideProxyModel::filterAcceptsColumn(int sourceColumn, const QMode
     Q_UNUSED(sourceParent);
 
     return sourceColumn >= m_hiddenColumns.size() || !m_hiddenColumns.at(sourceColumn);
+}
+bool SortFilterHideProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+  QVariant leftData = sourceModel()->data(left);
+  QVariant rightData = sourceModel()->data(right);
+  if (num.exactMatch(leftData.toString()))
+    {
+      if(num.exactMatch(rightData.toString()))
+	{
+	  return leftData.toDouble() < rightData.toDouble();
+	}
+      else if(bignum.exactMatch(rightData.toString()))
+	{
+	  return leftData.toDouble() < rightData.toString().replace(QString("."), QString("")).toDouble();
+	}
+    }
+  else if(bignum.exactMatch(leftData.toString()))
+    {
+      if(num.exactMatch(rightData.toString()))
+	{
+	  return leftData.toString().replace(QString("."), QString("")).toDouble() < rightData.toDouble();
+	}
+      else if(bignum.exactMatch(rightData.toString()))
+	{
+	  return leftData.toString().replace(QString("."), QString("")).toDouble() < rightData.toString().replace(QString("."), QString("")).toDouble();
+	}
+    }
+  return QSortFilterProxyModel::lessThan(left, right);
 }
