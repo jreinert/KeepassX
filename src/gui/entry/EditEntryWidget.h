@@ -55,13 +55,14 @@ public:
     explicit EditEntryWidget(QWidget* parent = Q_NULLPTR);
     ~EditEntryWidget();
 
-    void loadEntry(Entry* entry, bool create, bool history, const QString& groupName,
+    void loadEntry(Entry* entry, bool create, bool history, const QString& parentName,
                    Database* database);
 
     static const QColor CorrectSoFarColor;
     static const QColor ErrorColor;
 
     void createPresetsMenu(QMenu* expirePresetsMenu);
+    QString entryTitle() const;
 Q_SIGNALS:
     void editFinished(bool accepted);
     void historyEntryActivated(Entry* entry);
@@ -96,7 +97,7 @@ private Q_SLOTS:
 private:
     bool passwordsEqual();
     void setForms(const Entry* entry, bool restore = false);
-    QMenu *createPresetsMenu();
+    QMenu* createPresetsMenu();
 
     Entry* m_entry;
     Database* m_database;

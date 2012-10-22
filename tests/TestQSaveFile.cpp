@@ -102,6 +102,7 @@ void TestQSaveFile::autoFlush()
     QFile reader(targetFile);
     QVERIFY(reader.open(QIODevice::ReadOnly));
     QCOMPARE(QString::fromLatin1(reader.readAll().constData()), QString::fromLatin1("Auto-flush."));
+    reader.close();
 
     QVERIFY(QFile::remove(targetFile));
 }
@@ -152,6 +153,7 @@ void TestQSaveFile::transactionalWriteCanceled()
 
 void TestQSaveFile::transactionalWriteErrorRenaming()
 {
+#ifndef Q_OS_WIN
     const QString dir = tmpDir();
     QVERIFY(!dir.isEmpty());
     const QString targetFile = dir + QString::fromLatin1("/outfile");
@@ -178,6 +180,7 @@ void TestQSaveFile::transactionalWriteErrorRenaming()
 #else
     QVERIFY(file.setPermissions(QFile::ReadOwner | QFile::WriteOwner));
 #endif
+#endif // !Q_OS_WIN
 }
 
 QString TestQSaveFile::tmpDir()
